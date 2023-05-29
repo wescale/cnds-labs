@@ -1,0 +1,18 @@
+{
+  "commands":
+  [
+    {
+      "protocol": "http",
+      "method": "GET",
+      "resource": "/",
+      "crawl": true
+    },
+    {
+      "protocol": "http",
+      "method": "POST",
+      "resource": "/hello/say",
+      "body": "name=John&name=Doe",
+      "headers": ["Content-Type: application/x-www-form-urlencoded"]
+    }
+  ]
+}

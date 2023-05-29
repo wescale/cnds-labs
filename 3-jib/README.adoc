@@ -1,0 +1,65 @@
+= JIB Lab
+
+JIB is a Google Container Tools created framework made to create containerize your
+Java application seamlessly. It analyses your code to build a image whith the correct
+base image, entry point, and more.
+With JIB, you don't write a Dockerfile anymore but you configure the Maven or Gradle plugin.
+
+== Lab 01: Generate your image
+
+. *With the provided sample project, run `mvn compile jib:dockerBuild`*
+. *Analyse the maven build output and run the docker container build*
+
+== Lab 02: Work with dependencies
+
+**Add the following dependency to your pom.xml**
+
+[source, xml]
+----
+<dependencies>
+    <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>3.12.0</version>
+    </dependency>
+</dependencies>
+----
+
+**Modify the HelloWorld.java to use the commons-lang3 dependency**
+
+[source, java]
+----
+package fr.wescale.training;
+
+import org.apache.commons.lang3.ArrayUtils;
+
+public class HelloWorld {
+
+    public static void main(String[] args) {
+        System.out.println("Hello " + (ArrayUtils.isNotEmpty(args) ? args[0] : "world") + "!");
+    }
+}
+----
+
+**Compile your project and run the docker image**
+
+[NOTE]
+====
+The JIB maven plugin:
+
+* only requires a compile maven lifecycle phase as the classes of your projects will be uploaded to the `/app/classes` directory.
+* detects the dependency and upload them to the `/app/libs` directory
+* automatically adapt the classpath of you application to use the libraries
+* would do the same for resources by uploading them to the `/app/resources` folder
+
+====
+
+== Going further
+
+* Works with Quarkus: https://quarkus.io/guides/container-image#jib
+* Works with Spring Boot: https://github.com/GoogleContainerTools/jib/tree/master/examples/spring-boot
+* Works with Micronaut: https://github.com/GoogleContainerTools/jib/tree/master/examples/micronaut
+
+== Note on reproducible builds
+
+To discuss

@@ -1,0 +1,46 @@
+= Hadolint Lab
+
+Hadolint is a simple Dockerfile linter helping you to enforce Dockerfile best practices using custom rules for Dockerfile
+syntax and ShellScript when analysing `RUN` commands.
+
+
+[TIP]
+====
+A shell script is also provided to avoid writing long docker/podman command: `hadolint.sh`.
+It's a simple wrapper on top of the following docker command :
+
+[source, shell]
+----
+docker run --rm -i \
+    --mount type=bind,src=${PWD}/hadolint.yaml,dst=/config/hadolint.yaml hadolint/hadolint \
+    hadolint "$@" - < Dockerfile
+----
+
+* Documentation: https://github.com/hadolint/hadolint
+====
+
+:secnum:
+== Lab 01: Usage
+
+*Run hadolint against the provided Dockerfile and observe the result*
+
+
+== Lab 02: Ignoring rules
+
+You can decide to ignore a rule if you like. There are three ways to perform this action:
+
+* By using environment variables containing a list of ignored rules: `docker run --env HADOLINT_IGNORE=DL3010,DL3020 ....`
+* By using an CLI argument: `docker run hadolint/hadolint hadolint --ignore DL3010,DL3020 - < Dockerfile`
+* By using a comment in the Dockerfile (on top of the statement to ignore): `# hadolint ignore=DL3010,DL3020`
+* By using a static Yaml configuration file (https://github.com/hadolint/hadolint#configure[see documentation])
+
+TIP: Rules names can also be found in the documentation: https://github.com/hadolint/hadolint#rules
+
+*Run hadolint with the appropriate configuration to ignore the warning raised on the FROM directive*
+
+
+== Lab 03: Fix Dockerfile
+
+*Using the provided `hadolint.yaml` file ensure the Dockerfile is compliant with hadolint rules*
+
+TIP: You can run `./hadolint.sh Dockerfile -c /config/hadolint.yaml` to use the configuration file.

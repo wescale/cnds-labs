@@ -1,0 +1,117 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>fr.wescale.training</groupId>
+    <artifactId>jib-training</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+
+    <name>jib-training</name>
+    <description>Sample project for JIB lab</description>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <build>
+        <plugins>
+            <!-- maven deploy plugin-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <!-- Deployment is skipped as the distribution management is not configured -->
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+
+            <!-- maven compiler plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>11</source>
+                    <target>11</target>
+                </configuration>
+            </plugin>
+
+            <!-- jib maven plugin-->
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>3.3.0</version>
+                <executions>
+                    <execution>
+                        <id>deploy-to-gitlab-registry</id>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                        <phase>deploy</phase>
+                        <configuration>
+                            <from>
+                                <image>eclipse-temurin:11-jre</image>
+                                <!--
+                                Platform management is not available when building against docker engine
+                                But it's available when pushing to a registry; this will make mac users happy
+                                -->
+                                <platforms>
+                                    <platform>
+                                        <architecture>amd64</architecture>
+                                        <os>linux</os>
+                                    </platform>
+                                    <platform>
+                                        <architecture>arm64</architecture>
+                                        <os>linux</os>
+                                    </platform>
+                                </platforms>
+                            </from>
+                        </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+
+                    <!-- Base image configuration -->
+                    <from>
+                        <image>eclipse-temurin:11-jre</image>
+                    </from>
+
+                    <!-- Configuration for target registry -->
+                    <to>
+                        <image>registry.gitlab.com/ktoublanc-ws/cnd-labs</image>
+                        <auth>
+                            <username>${env.GITLAB_USERNAME}</username>
+                            <password>${env.GITLAB_PASSWORD}</password>
+                        </auth>
+                        <tags>
+                            <tag>${project.version}</tag>
+                        </tags>
+                    </to>
+
+                    <!-- Container specific configurations -->
+                    <container>
+                        <creationTime>USE_CURRENT_TIMESTAMP</creationTime>
+                        <jvmFlags>
+                            <jvmFlag>-Dmy.property=example.value</jvmFlag>
+                            <jvmFlag>-Xms512m</jvmFlag>
+                            <jvmFlag>-Xdebug</jvmFlag>
+                        </jvmFlags>
+                        <args>
+                            <arg>some</arg>
+                            <arg>args</arg>
+                        </args>
+                        <ports>
+                            <port>1000</port>
+                            <port>2000-2003/udp</port>
+                        </ports>
+                        <labels>
+                            <key1>value1</key1>
+                            <key2>value2</key2>
+                        </labels>
+                        <format>Docker</format>
+                    </container>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
